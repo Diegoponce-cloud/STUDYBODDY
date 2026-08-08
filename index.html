@@ -523,7 +523,9 @@
       // Setup events
       document.getElementById("registration-form").addEventListener("submit", handleRegistration);
       document.getElementById("btn-restart-sim").addEventListener("click", resetRegistrationForm);
-      document.getElementById("btn-next-step-demo").addEventListener("click", showUniversityMockup);
+      document.getElementById("btn-next-step-demo").addEventListener("click", () => {
+        window.location.href = 'perfil.html';
+      });
       document.getElementById("btn-back-to-success").addEventListener("click", showSuccessScreen);
       document.getElementById("university-form").addEventListener("submit", handleUniversitySubmit);
       document.getElementById("simulated-login-link").addEventListener("click", (e) => {
