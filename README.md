@@ -17,3 +17,8 @@ Además, el MVP permite crear grupos y unirse a grupos existentes.
 
 ## Fuera del MVP
 IA, chat, videollamadas, calendario, compartir archivos, recordatorios y monetización Freemium no forman parte del MVP actual.
+## Prototipo en vivo
+
+El prototipo funcional de StudyBuddy está disponible en:
+
+https://diegoponce-cloud.github.io/STUDYBODDY/
