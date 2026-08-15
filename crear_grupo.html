@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Grupo - StudyBuddy</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --sb-primary: #0B3954;
+      --sb-accent: #087E8B;
+      --sb-bg: #F7F7F2;
+      --sb-text: #2D3A45;
+    }
+    body { font-family: 'Open Sans', sans-serif; background-color: var(--sb-bg); color: var(--sb-text); min-height: 100vh; display: flex; flex-direction: column; }
+    h1, h2 { font-family: 'Poppins', sans-serif; color: var(--sb-primary); }
+    .navbar { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; }
+    .form-card { border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(11, 57, 84, 0.08); background-color: #ffffff; padding: 40px; margin: 40px 0; }
+    .btn-accent { background-color: var(--sb-accent); color: #ffffff; width: 100%; padding: 12px; border-radius: 12px; border: none; }
+    .form-control, .form-select { border: 2px solid #E2E8F0; border-radius: 12px; padding: 12px 16px; }
+    #message-container { display: none; border-radius: 12px; padding: 20px; margin-top: 20px; text-align: center; }
+    .success-msg { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .error-msg { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  </style>
+</head>
+<body>
+  <nav class="navbar"><div class="container"><a href="index.html" class="navbar-brand text-dark fw-bold">StudyBuddy</a></div></nav>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="form-card">
+          <h2 class="mb-4">Crear un Nuevo Grupo</h2>
+          <form id="create-group-form">
+            <div class="mb-3"><label class="form-label">Curso</label><input type="text" class="form-control" name="curso" required></div>
+            <div class="mb-3"><label class="form-label">Nombre del Grupo</label><input type="text" class="form-control" name="nombre" required></div>
+            <div class="mb-3"><label class="form-label">Modalidad</label><select class="form-select" name="modalidad" required><option value="Presencial">Presencial</option><option value="Virtual">Virtual</option></select></div>
+            <div class="mb-3"><label class="form-label">Horario</label><input type="text" class="form-control" name="horario" required></div>
+            <div class="mb-4"><label class="form-label">Cupo Máximo</label><input type="number" class="form-control" name="cupo_maximo" required></div>
+            <button type="submit" class="btn btn-accent" id="btn-submit">Crear Grupo</button>
+          </form>
+          <div id="message-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    const supabase = createClient('https://vrtwwwcjyijzonrqusfk.supabase.co', 'sb_publishable_duuxebAmqVJ2OvsRGxvjrw_hdNyLwd3')
+    const form = document.getElementById('create-group-form');
+    const container = document.getElementById('message-container');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = {
+        curso: formData.get('curso'),
+        nombre: formData.get('nombre'),
+        modalidad: formData.get('modalidad'),
+        horario: formData.get('horario'),
+        cupo_maximo: parseInt(formData.get('cupo_maximo'))
+      };
+      const { error } = await supabase.from('grupos_estudio').insert([data]);
+      container.style.display = 'block';
+      if(error) { container.className = 'error-msg'; container.textContent = error.message; }
+      else { container.className = 'success-msg'; container.textContent = '¡Grupo creado exitosamente!'; form.reset(); }
+    });
+  </script>
+</body>
+</html>
