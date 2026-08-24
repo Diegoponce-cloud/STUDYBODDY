@@ -21,4 +21,5 @@ IA, chat, videollamadas, calendario, compartir archivos, recordatorios y monetiz
 
 El prototipo funcional de StudyBuddy está disponible en:
 
-https://diegoponce-cloud.github.io/STUDYBODDY/
+https://studyboddy.vercel.app/
+
