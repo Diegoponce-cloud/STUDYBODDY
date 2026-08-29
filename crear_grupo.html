@@ -44,7 +44,6 @@
             <div class="mb-3"><label class="form-label">Nombre del Grupo</label><input type="text" class="form-control" name="nombre" required></div>
             <div class="mb-3"><label class="form-label">Modalidad</label><select class="form-select" name="modalidad" required><option value="Presencial">Presencial</option><option value="Virtual">Virtual</option></select></div>
             <div class="mb-3"><label class="form-label">Horario</label><input type="text" class="form-control" name="horario" required></div>
-            <div class="mb-4"><label class="form-label">Cupo Máximo</label><input type="number" class="form-control" name="cupo_maximo" required></div>
             <button type="submit" class="btn btn-accent" id="btn-submit">Crear Grupo</button>
           </form>
           <div id="message-container"></div>
@@ -52,9 +51,7 @@
       </div>
     </div>
   </div>
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-    const supabase = createClient('https://vrtwwwcjyijzonrqusfk.supabase.co', 'sb_publishable_duuxebAmqVJ2OvsRGxvjrw_hdNyLwd3')
+  <script>
     const form = document.getElementById('create-group-form');
     const container = document.getElementById('message-container');
     form.addEventListener('submit', async (e) => {
@@ -64,13 +61,30 @@
         curso: formData.get('curso'),
         nombre: formData.get('nombre'),
         modalidad: formData.get('modalidad'),
-        horario: formData.get('horario'),
-        cupo_maximo: parseInt(formData.get('cupo_maximo'))
+        horario: formData.get('horario')
       };
-      const { error } = await supabase.from('grupos_estudio').insert([data]);
-      container.style.display = 'block';
-      if(error) { container.className = 'error-msg'; container.textContent = error.message; }
-      else { container.className = 'success-msg'; container.textContent = '¡Grupo creado exitosamente!'; form.reset(); }
+      
+      try {
+        const response = await fetch('/api/submit_request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        container.style.display = 'block';
+        if(!response.ok) { 
+          container.className = 'error-msg'; 
+          container.textContent = result.error || 'Error al crear el grupo'; 
+        } else { 
+          container.className = 'success-msg'; 
+          container.textContent = result.message; 
+          form.reset(); 
+        }
+      } catch (err) {
+        container.style.display = 'block';
+        container.className = 'error-msg';
+        container.textContent = 'Error de conexión';
+      }
     });
   </script>
 </body>

@@ -6,12 +6,10 @@ export default async function handler(req, res) {
   }
 
   const {
-    nombre_estudiante,
-    materia,
-    tema,
-    fecha_sesion,
+    curso,
+    nombre,
     modalidad,
-    mensaje
+    horario
   } = req.body;
 
   const supabase = createClient(
@@ -20,15 +18,13 @@ export default async function handler(req, res) {
   );
 
   const { error } = await supabase
-    .from('study_requests')
+    .from('grupos_estudio')
     .insert([
       {
-        nombre_estudiante,
-        materia,
-        tema,
-        fecha_sesion,
+        curso,
+        nombre,
         modalidad,
-        mensaje
+        horario
       }
     ]);
 
@@ -36,5 +32,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: error.message });
   }
 
-  return res.status(200).json({ message: 'Request submitted successfully' });
+  return res.status(200).json({ message: 'Grupo creado exitosamente' });
 }
