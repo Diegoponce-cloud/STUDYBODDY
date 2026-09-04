@@ -23,3 +23,22 @@ El prototipo funcional de StudyBuddy está disponible en:
 
 https://studyboddy.vercel.app/
 
+## Funcionalidad de inscripción a grupos
+
+StudyBuddy permite al estudiante seleccionar un grupo de estudio disponible e inscribirse proporcionando su nombre y correo electrónico.
+
+Al completar la inscripción, el sistema:
+
+- Registra la información en Supabase.
+- Genera un folio único para la inscripción.
+- Permite consultar posteriormente la inscripción utilizando el folio.
+- Muestra el grupo y el estado de la inscripción.
+
+### Prueba funcional
+
+Se realizó una prueba de inscripción al grupo "Cálculo Avanzado".
+
+Folio de prueba: SB-275197
+
+Resultado: inscripción creada correctamente, almacenada en Supabase y consultada exitosamente mediante el folio.
+
