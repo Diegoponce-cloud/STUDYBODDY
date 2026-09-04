@@ -1,4 +1,4 @@
-import { OpenAI } from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -11,14 +11,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing question' });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.GEMINI_API_KEY) {
     return res.status(500).json({ error: 'Chatbot configuration error' });
   }
 
   try {
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const context = `
       Eres un asistente experto para StudyBuddy. StudyBuddy es una plataforma donde estudiantes universitarios encuentran grupos de estudio.
@@ -28,15 +27,12 @@ export default async function handler(req, res) {
       - Si la pregunta no es sobre StudyBuddy, indica amablemente que solo puedes ayudar con temas relacionados a la plataforma.
     `;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: context },
-        { role: 'user', content: question }
-      ],
-    });
+    const prompt = `${context}\n\nPregunta: ${question}`;
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
 
-    return res.status(200).json({ answer: completion.choices[0].message.content });
+    return res.status(200).json({ answer: text });
   } catch (error) {
     console.error('Chatbot error:', error);
     return res.status(500).json({ error: 'Error procesando tu pregunta' });
