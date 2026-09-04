@@ -46,6 +46,35 @@
       const data = await res.json();
       document.getElementById('resultado').innerHTML = data.folio ? `Grupo: ${data.group_name} | Estado: ${data.status}` : 'No encontrado';
     }
+
+    <hr class="my-5">
+    <h2>Asistente StudyBuddy</h2>
+    <div class="mb-3">
+      <input type="text" id="chat-question" class="form-control" placeholder="¿En qué puedo ayudarte?">
+      <button onclick="preguntarChatbot()" class="btn btn-accent mt-2">Preguntar</button>
+    </div>
+    <div id="chat-respuesta" class="p-3 bg-white border rounded"></div>
+
+    <script>
+      async function preguntarChatbot() {
+        const question = document.getElementById('chat-question').value;
+        const respArea = document.getElementById('chat-respuesta');
+        if (!question) return;
+        respArea.innerText = 'Pensando...';
+        try {
+          const res = await fetch('/api/chatbot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question })
+          });
+          const data = await res.json();
+          respArea.innerText = data.answer || data.error || 'Error desconocido';
+        } catch (e) {
+          respArea.innerText = 'Error al conectar con el asistente.';
+        }
+      }
+    </script>
+
   </script>
 </body>
 </html>
