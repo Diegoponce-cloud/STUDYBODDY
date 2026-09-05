@@ -15,8 +15,6 @@ Además, el MVP permite crear grupos y unirse a grupos existentes.
 - [PRD](docs/PRD.md)
 - [FRD](docs/FRD.md)
 
-## Fuera del MVP
-IA, chat, videollamadas, calendario, compartir archivos, recordatorios y monetización Freemium no forman parte del MVP actual.
 ## Prototipo en vivo
 
 El prototipo funcional de StudyBuddy está disponible en:
@@ -25,14 +23,16 @@ https://studyboddy.vercel.app/
 
 ## Funcionalidad de inscripción a grupos
 
-StudyBuddy permite al estudiante seleccionar un grupo de estudio disponible e inscribirse proporcionando su nombre y correo electrónico.
+StudyBuddy permite a los estudiantes inscribirse en grupos de estudio:
 
-Al completar la inscripción, el sistema:
-
-- Registra la información en Supabase.
-- Genera un folio único para la inscripción.
-- Permite consultar posteriormente la inscripción utilizando el folio.
-- Muestra el grupo y el estado de la inscripción.
+- El estudiante selecciona un grupo disponible.
+- Proporciona su nombre y correo.
+- Antes de enviar, el usuario ve un resumen y confirma la acción.
+- La inscripción se procesa mediante `/api/register_group`.
+- Se guarda en Supabase en la tabla `group_registrations`.
+- Se genera un folio único al registrarse.
+- Se almacena un estado para la inscripción.
+- El folio generado permite consultar el estado de la inscripción.
 
 ### Prueba funcional
 
@@ -41,4 +41,13 @@ Se realizó una prueba de inscripción al grupo "Cálculo Avanzado".
 Folio de prueba: SB-275197
 
 Resultado: inscripción creada correctamente, almacenada en Supabase y consultada exitosamente mediante el folio.
+
+## Asistente Inteligente (Chatbot)
+
+StudyBuddy incluye un asistente inteligente accesible desde el producto:
+
+- El frontend realiza la comunicación con el backend llamando a `/api/chatbot`.
+- El backend utiliza el modelo Gemini de Google para procesar las consultas.
+- La variable de entorno `GEMINI_API_KEY` se mantiene configurada en el servidor para la autenticación.
+- El chatbot está configurado para responder únicamente con información relacionada con StudyBuddy.
 
