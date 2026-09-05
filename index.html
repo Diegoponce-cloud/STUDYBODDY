@@ -14,6 +14,22 @@
 <body>
   <div class="container py-5">
     <h1>Grupos Disponibles</h1>
+<!-- Modal de confirmación -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmar inscripción</h5>
+          </div>
+          <div class="modal-body" id="confirmModalBody"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-accent" id="confirmButton">Confirmar inscripción</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="grupos-list" class="row g-3"></div>
     <hr class="my-5">
     <h2>Consultar Inscripción</h2>
@@ -40,13 +56,25 @@
       const nombre = prompt('Tu nombre:');
       const email = prompt('Tu correo:');
       if (!nombre || !email) return;
-      const res = await fetch('/api/register_group', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ group_id: id, group_name: name, student_name: nombre, student_email: email })
-      });
-      const data = await res.json();
-      alert(data.folio ? 'Inscripción exitosa! Folio: ' + data.folio : 'Error: ' + data.error);
+
+      const modalBody = document.getElementById('confirmModalBody');
+      modalBody.innerHTML = `<p><strong>Grupo:</strong> ${name}</p>
+                             <p><strong>Nombre:</strong> ${nombre}</p>
+                             <p><strong>Correo:</strong> ${email}</p>`;
+
+      const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+      modal.show();
+
+      document.getElementById('confirmButton').onclick = async () => {
+        modal.hide();
+        const res = await fetch('/api/register_group', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ group_id: id, group_name: name, student_name: nombre, student_email: email })
+        });
+        const data = await res.json();
+        alert(data.folio ? 'Inscripción exitosa! Folio: ' + data.folio : 'Error: ' + data.error);
+      };
     }
     async function consultarFolio() {
       const folio = document.getElementById('folio-input').value;
