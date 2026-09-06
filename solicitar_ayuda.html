@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solicitar Ayuda Académica - StudyBuddy</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root { --sb-primary: #0B3954; --sb-accent: #087E8B; --sb-bg: #F7F7F2; }
+    body { background-color: var(--sb-bg); }
+    .btn-accent { background-color: var(--sb-accent); color: white; }
+    .form-card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 form-card">
+        <h2>Solicitar ayuda académica</h2>
+        <form id="help-form">
+          <div class="mb-3">
+            <label>Curso</label>
+            <select class="form-select" id="course" required>
+              <option value="Cálculo Avanzado">Cálculo Avanzado</option>
+              <option value="Programación Web">Programación Web</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label>Tipo de ayuda</label>
+            <select class="form-select" id="help_type" required>
+              <option value="Repaso de tema">Repaso de tema</option>
+              <option value="Resolver dudas">Resolver dudas</option>
+              <option value="Preparación para examen">Preparación para examen</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label>Modalidad</label>
+            <select class="form-select" id="modality" required>
+              <option value="Presencial">Presencial</option>
+              <option value="Virtual">Virtual</option>
+            </select>
+          </div>
+          <div class="mb-3"><input type="text" class="form-control" id="name" placeholder="Tu nombre" required></div>
+          <div class="mb-3"><input type="email" class="form-control" id="email" placeholder="Tu correo" required></div>
+          <button type="button" class="btn btn-accent w-100" onclick="showSummary()">Solicitar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="summaryModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Resumen de solicitud</h5></div>
+        <div class="modal-body" id="summaryBody"></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-accent" onclick="submitRequest()">Confirmar solicitud</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function showSummary() {
+      const data = {
+        course: document.getElementById('course').value,
+        help_type: document.getElementById('help_type').value,
+        modality: document.getElementById('modality').value,
+        student_name: document.getElementById('name').value,
+        student_email: document.getElementById('email').value
+      };
+      if(!data.student_name || !data.student_email) return alert('Campos obligatorios');
+      document.getElementById('summaryBody').innerHTML = 
+        `<p><strong>Curso:</strong> ${data.course}</p>
+         <p><strong>Tipo de ayuda:</strong> ${data.help_type}</p>
+         <p><strong>Modalidad:</strong> ${data.modality}</p>
+         <p><strong>Nombre:</strong> ${data.student_name}</p>
+         <p><strong>Correo:</strong> ${data.student_email}</p>`;
+      new bootstrap.Modal(document.getElementById('summaryModal')).show();
+    }
+
+    async function submitRequest() {
+      const payload = {
+        course: document.getElementById('course').value,
+        help_type: document.getElementById('help_type').value,
+        modality: document.getElementById('modality').value,
+        student_name: document.getElementById('name').value,
+        student_email: document.getElementById('email').value
+      };
+      
+      try {
+        const res = await fetch('/api/request_academic_help', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if(data.folio) {
+          alert('Solicitud enviada!\nFolio: ' + data.folio + '\nEstado: ' + data.status);
+          window.location.href = 'index.html';
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch(err) {
+        alert('Error al enviar la solicitud.');
+      }
+    }
+  </script>
+</body>
+</html>
