@@ -9,7 +9,7 @@ StudyBuddy es una plataforma que ayuda a estudiantes a encontrar compañeros de 
 2. **Perfil:** permitir que el estudiante gestione universidad, carrera, cursos y disponibilidad.
 3. **Buscar grupos:** permitir que el estudiante encuentre grupos de estudio relacionados con sus cursos.
 
-Además, el MVP permite crear grupos y unirse a grupos existentes.
+Además, el MVP permite crear grupos, unirse a grupos existentes, solicitar compañeros de estudio y solicitar ayuda académica.
 
 ## Documentación
 - [PRD](docs/PRD.md)
@@ -17,37 +17,38 @@ Además, el MVP permite crear grupos y unirse a grupos existentes.
 
 ## Prototipo en vivo
 
-El prototipo funcional de StudyBuddy está disponible en:
+- **Producto principal:** https://studyboddy.vercel.app/
+- **Solicitar compañero:** https://studyboddy.vercel.app/solicitar_companero.html
+- **Solicitar ayuda académica:** https://studyboddy.vercel.app/solicitar_ayuda.html
 
-https://studyboddy.vercel.app/
+*Nota: Las transacciones utilizan funciones serverless y las credenciales de Supabase y servicios externos permanecen seguras del lado del servidor.*
 
-## Funcionalidad de inscripción a grupos
+## Funcionalidades actuales
 
+### Inscripción a grupos
 StudyBuddy permite a los estudiantes inscribirse en grupos de estudio:
-
 - El estudiante selecciona un grupo disponible.
 - Proporciona su nombre y correo.
 - Antes de enviar, el usuario ve un resumen y confirma la acción.
-- La inscripción se procesa mediante `/api/register_group`.
-- Se guarda en Supabase en la tabla `group_registrations`.
+- La inscripción se procesa mediante /api/register_group.
+- Se guarda en Supabase en la tabla group_registrations.
 - Se genera un folio único al registrarse.
-- Se almacena un estado para la inscripción.
-- El folio generado permite consultar el estado de la inscripción.
 
-### Prueba funcional
+### Solicitar compañero de estudio
+- Flujo en solicitar_companero.html.
+- Se procesa mediante /api/request_study_partner.mjs.
+- Los datos se almacenan en public.study_partner_requests.
+- Se genera folio SB-P-XXXXXX con estado pending.
 
-Se realizó una prueba de inscripción al grupo "Cálculo Avanzado".
-
-Folio de prueba: SB-275197
-
-Resultado: inscripción creada correctamente, almacenada en Supabase y consultada exitosamente mediante el folio.
+### Solicitar ayuda académica
+- Flujo en solicitar_ayuda.html.
+- Se procesa mediante /api/request_academic_help.mjs.
+- Los datos se almacenan en public.academic_help_requests.
+- Se genera folio SB-H-XXXXXX con estado pending.
 
 ## Asistente Inteligente (Chatbot)
-
 StudyBuddy incluye un asistente inteligente accesible desde el producto:
-
-- El frontend realiza la comunicación con el backend llamando a `/api/chatbot`.
+- El frontend realiza la comunicación con el backend llamando a /api/chatbot.
 - El backend utiliza el modelo Gemini de Google para procesar las consultas.
-- La variable de entorno `GEMINI_API_KEY` se mantiene configurada en el servidor para la autenticación.
+- La variable de entorno GEMINI_API_KEY se mantiene configurada en el servidor para la autenticación.
 - El chatbot está configurado para responder únicamente con información relacionada con StudyBuddy.
-
